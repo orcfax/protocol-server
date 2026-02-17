@@ -99,6 +99,7 @@ class BackgroundRunner:
         self.keypair = KeyPair()
         self.uuid = f"{uuid.uuid4()}"
         self.feed = f"custom/FEED/{nanoid.generate(size=6)}"
+        self.feed_epoch = f"custom/FEED/epoch1"
         with open(os.path.join(static, keyfile), "w", encoding="utf-8") as pkey:
             pkey.write(json.dumps(self.keypair.pkey_as_data(), indent=2))
         with open(os.path.join(static, index_html), "w", encoding="utf-8") as index:
@@ -146,7 +147,7 @@ class BackgroundRunner:
             date.year, date.month, date.day, date.hour
         )
         data = {
-            "feed_id": self.feed,
+            "feed_id": self.feed_time,
             "current": epoch_hour * 1000,
             "time": int(time.time()) * 1000,
         }

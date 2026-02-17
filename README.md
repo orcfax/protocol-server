@@ -1,3 +1,3 @@
 # Custom Protocol
 
-Outline/protocol server for Orcfax Express.
+Outline/protocol server for Orcfax Custom Feeds.

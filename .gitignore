@@ -1,0 +1,7 @@
+__pycache__
+venv
+*.bk
+*.backup
+static/datafeed.json
+static/index.html
+static/keys.json

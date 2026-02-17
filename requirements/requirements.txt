@@ -1,0 +1,7 @@
+# Project requirements.
+
+cbor2
+fastapi
+nanoid
+pycardano
+uvicorn

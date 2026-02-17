@@ -5,3 +5,5 @@ venv
 static/datafeed.json
 static/index.html
 static/keys.json
+static/datafeed_one.json
+static/datafeed_two.json

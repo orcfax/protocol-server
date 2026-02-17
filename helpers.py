@@ -31,7 +31,8 @@ logger = logging.getLogger(config.UVICORN_LOGGER)
 static: Final[str] = "static"
 keyfile: Final[str] = "keys.json"
 index_html: Final[str] = "index.html"
-datafeed_file: Final[str] = "datafeed.json"
+data_feed_file_one: Final[str] = "datafeed_one.json"
+data_feed_file_two: Final[str] = "datafeed_two.json"
 UTC_TIME_FORMAT: Final[str] = "%Y-%m-%dT%H:%M:%SZ"
 
 
@@ -104,11 +105,9 @@ class BackgroundRunner:
             index.write(html_helper.page)
 
     @staticmethod
-    async def write_feed_data(data: dict):
+    async def write_feed_data(data: dict, file_name: str):
         """Write feed data."""
-        with open(
-            os.path.join(static, datafeed_file), "w", encoding="utf-8"
-        ) as datafeed:
+        with open(os.path.join(static, file_name), "w", encoding="utf-8") as datafeed:
             datafeed.write(json.dumps(data, indent=2))
 
     async def run_main(self):
@@ -117,8 +116,13 @@ class BackgroundRunner:
             if len(self.values) > self.max:
                 self.values.pop(0)
             self.values.append(self.value)
-            data = self.valuedata
-            await self.write_feed_data(data)
+            feed_one = self.valuedata
+            await self.write_feed_data(
+                feed_one,
+                data_feed_file_one,
+            )
+            feed_two = self.pluraldata
+            await self.write_feed_data(feed_two, data_feed_file_two)
             await asyncio.sleep(self.seconds)
 
     @staticmethod

@@ -12,7 +12,8 @@ page: Final[
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" >
 <!-- oracle data feed -->
-<link rel="meta" type="application/ld+json" title="custom oracle data" href="datafeed.json" >
+<link rel="meta" type="application/ld+json" title="custom oracle data - value, avg" href="datafeed_one.json" >
+<link rel="meta" type="application/ld+json" title="custom oracle data - epoch hourly" href="datafeed_two.json" >
 <link rel="meta" type="application/json" title="public key" href="keys.json" >
 <!-- style -->
 <style>
@@ -46,7 +47,8 @@ page: Final[
     <p>Widget Data Inc..</p>
     <ul>
         <li>keys: <a href="keys.json">keys.json</a></li>
-        <li>microdata: <a href="datafeed.json">datafeed.json</a></li>
+        <li>microdata (value, mean): <a href="datafeed_one.json">datafeed_one.json</a></li>
+        <li>microdata (time): <a href="datafeed_two.json">datafeed_two.json</a></li>
         <li>api: <a href="/docs">docs</a></li.
     </ul>
     </div>

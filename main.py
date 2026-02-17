@@ -57,9 +57,10 @@ app = FastAPI(lifespan=lifespan)
 runner = helpers.BackgroundRunner()
 
 
-def all_headers(response: Response) -> Response:
+def all_headers(response: Response, feed_id: str = "") -> Response:
     """Return all known headers."""
-    response.headers["X-FEED-ID"] = runner.feed
+    if feed_id != "":
+        response.headers["X-FEED-ID"] = feed_id
     response.headers["X-empty-string"] = ""
     response.headers["X-NODE-ID"] = runner.uuid
     response.headers["X-ORCFAX"] = "hello Orcfax!"
@@ -69,21 +70,21 @@ def all_headers(response: Response) -> Response:
 @app.head("/data", include_in_schema=False)
 @app.get("/data", tags=[TAG_DATA])
 async def data(response: Response):
-    all_headers(response)
+    all_headers(response, runner.feed)
     return runner.valuedata
 
 
 @app.head("/data_debug", include_in_schema=False)
 @app.get("/data_debug", tags=[TAG_DEBUG])
 async def data(response: Response):
-    all_headers(response)
+    all_headers(response, runner.feed)
     return runner.valuedata_debug
 
 
 @app.head("/data_plural", include_in_schema=False)
 @app.get("/data_plural", tags=[TAG_DATA])
 async def data(response: Response):
-    all_headers(response)
+    all_headers(response, runner.feed_epoch)
     return runner.pluraldata
 
 

@@ -5,7 +5,13 @@ from typing import Final
 page: Final[
     str
 ] = """<!DOCTYPE html>
+<html lang="en">
 <head>
+<!-- meta -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=0.6">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<!-- title -->
 <title>Orcfax OE Data Demo</title>
 <!-- Stylesheets -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" type="text/css">
@@ -40,7 +46,7 @@ page: Final[
 </style>
 </head>
 <body>
-<header/>
+<header></header>
 <main class='container' style='width: 850px;'>
     <h1>Custom Oracle Feed</h1>
     <div>
@@ -49,7 +55,7 @@ page: Final[
         <li>keys: <a href="keys.json">keys.json</a></li>
         <li>microdata (value, mean): <a href="datafeed_one.json">datafeed_one.json</a></li>
         <li>microdata (time): <a href="datafeed_two.json">datafeed_two.json</a></li>
-        <li>api: <a href="/docs">docs</a></li.
+        <li>api: <a href="/docs">docs</a></li>
     </ul>
     </div>
     <br>
@@ -68,7 +74,7 @@ page: Final[
     </ul>
     </div>
 </main>
-<footer/>
+<footer></footer>
 </body>
 </html>
 

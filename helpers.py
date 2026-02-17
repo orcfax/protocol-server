@@ -147,7 +147,7 @@ class BackgroundRunner:
             date.year, date.month, date.day, date.hour
         )
         data = {
-            "feed_id": self.feed_time,
+            "feed_id": self.feed_epoch,
             "current": epoch_hour * 1000,
             "time": int(time.time()) * 1000,
         }

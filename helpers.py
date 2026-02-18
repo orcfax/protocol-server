@@ -158,10 +158,10 @@ class BackgroundRunner:
             os.path.join(archive, f"{epoch_year}", current_fname), "a"
         ) as archive_file:
             # write key data.
-            archive_file.write(json.dumps(self.keypair.pkey_as_data()))
+            archive_file.write(json.dumps(data))
             archive_file.write("\n")
             # write data.
-            archive_file.write(json.dumps(data))
+            archive_file.write(json.dumps(self.keypair.pkey_as_data()))
             archive_file.write("\n")
         archive_replace: Final[str] = "{{!!ARCHIVE-LIST!!}}"
         with open(os.path.join(archive, archive_html), "w") as html:

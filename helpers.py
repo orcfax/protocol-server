@@ -11,6 +11,7 @@ import time
 import uuid
 
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Final
 
 import html_helper
@@ -112,22 +113,22 @@ class BackgroundRunner:
         self.uuid = f"{uuid.uuid4()}"
         self.feed = self.data_feed
         self.feed_epoch = self.epoch_feed
+        self.epoch_year = 0
         self.epoch_day = 0
         with open(os.path.join(static, keyfile), "w", encoding="utf-8") as pkey:
             pkey.write(json.dumps(self.keypair.pkey_as_data(), indent=2))
         with open(os.path.join(static, index_html), "w", encoding="utf-8") as index:
             index.write(html_helper.page)
 
-    @staticmethod
-    def ls_data_files() -> str:
+    def ls_data_files(self) -> str:
         """List files in the data directory"""
         li = ""
-        for item in os.listdir(archive):
+        for item in os.listdir(os.path.join(archive, f"{self.epoch_year}")):
             if item in (".gitignore"):
                 continue
             if item.endswith("html"):
                 continue
-            li = f'{li}<li><a href="{item}">{item}</li>\n'
+            li = f'{li}<li><a href="{self.epoch_year}/{item}">{item}</li>\n'
         return li
 
     def write_indices(self, data: dict, filename: str):
@@ -145,11 +146,17 @@ class BackgroundRunner:
 
         """
         date = datetime.now(timezone.utc)
+        epoch_year = self.get_granular_timestamp(date.year)
+        if self.epoch_year != epoch_year:
+            self.epoch_year = epoch_year
+        Path(f"{archive}/{epoch_year}").mkdir(parents=True, exist_ok=True)
         epoch_day = self.get_granular_timestamp(date.year, date.month, date.day)
         if self.epoch_day != epoch_day:
             self.epoch_day = epoch_day
         current_fname = f"{self.epoch_day}-{filename}".replace("json", "jsonl")
-        with open(os.path.join(archive, current_fname), "a") as archive_file:
+        with open(
+            os.path.join(archive, f"{epoch_year}", current_fname), "a"
+        ) as archive_file:
             # write key data.
             archive_file.write(json.dumps(self.keypair.pkey_as_data()))
             archive_file.write("\n")

@@ -41,7 +41,7 @@ install and run:
 ```bash
 python -m venv venv
 source venv/bin/activate
-python -m pop install -r requirements/requirements.txt
+python -m pip install -r requirements/requirements.txt
 python main.py
 ```
 
@@ -54,7 +54,7 @@ python main.py -h
 To install local dependencies and run basic tests:
 
 ```bash
-python -m pop install -r requirements/local.txt
+python -m pip install -r requirements/local.txt
 pytest
 ```
 

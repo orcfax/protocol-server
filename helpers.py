@@ -29,8 +29,10 @@ logger = logging.getLogger(config.UVICORN_LOGGER)
 
 
 static: Final[str] = "static"
+archive: Final[str] = "archive"
 keyfile: Final[str] = "keys.json"
 index_html: Final[str] = "index.html"
+archive_html: Final[str] = "archive.html"
 data_feed_file_one: Final[str] = "datafeed_one.json"
 data_feed_file_two: Final[str] = "datafeed_two.json"
 UTC_TIME_FORMAT: Final[str] = "%Y-%m-%dT%H:%M:%SZ"
@@ -88,28 +90,83 @@ class KeyPair:
 
 
 class BackgroundRunner:
-    """Via. https://github.com/fastapi/fastapi/issues/2713"""
+    """Via. https://github.com/fastapi/fastapi/issues/2713
+
+    NB. for demonstration purposes, this code is handling two data feeds.
+    Before extending it should be abstracted into a base class handling
+    the generic functions and then separate abstracted classes handling
+    feed specific implementations. Rules for abstraction should become
+    clearer the more this is used.
+    """
 
     max: Final[int] = 120
     seconds: Final[int] = 30
+
+    data_feed: Final[int] = f"custom/FEED/{nanoid.generate(size=6)}"
+    epoch_feed: Final[int] = f"custom/FEED/epoch1"
 
     def __init__(self):
         self.values = []
         self.value = 0
         self.keypair = KeyPair()
         self.uuid = f"{uuid.uuid4()}"
-        self.feed = f"custom/FEED/{nanoid.generate(size=6)}"
-        self.feed_epoch = f"custom/FEED/epoch1"
+        self.feed = self.data_feed
+        self.feed_epoch = self.epoch_feed
+        self.epoch_day = 0
         with open(os.path.join(static, keyfile), "w", encoding="utf-8") as pkey:
             pkey.write(json.dumps(self.keypair.pkey_as_data(), indent=2))
         with open(os.path.join(static, index_html), "w", encoding="utf-8") as index:
             index.write(html_helper.page)
 
     @staticmethod
-    async def write_feed_data(data: dict, file_name: str):
+    def ls_data_files() -> str:
+        """List files in the data directory"""
+        li = ""
+        for item in os.listdir(archive):
+            if item in (".gitignore"):
+                continue
+            if item.endswith("html"):
+                continue
+            li = f'{li}<li><a href="{item}">{item}</li>\n'
+        return li
+
+    def write_indices(self, data: dict, filename: str):
+        """Write index adata.
+
+        Format: JSONL:
+
+            - key data
+            - signed data
+
+        Parsing:
+
+            - key above data signed the data.
+            - read both together to determine if correct.
+
+        """
+        date = datetime.now(timezone.utc)
+        epoch_day = self.get_granular_timestamp(date.year, date.month, date.day)
+        if self.epoch_day != epoch_day:
+            self.epoch_day = epoch_day
+        current_fname = f"{self.epoch_day}-{filename}".replace("json", "jsonl")
+        with open(os.path.join(archive, current_fname), "a") as archive_file:
+            # write key data.
+            archive_file.write(json.dumps(self.keypair.pkey_as_data()))
+            archive_file.write("\n")
+            # write data.
+            archive_file.write(json.dumps(data))
+            archive_file.write("\n")
+        archive_replace: Final[str] = "{{!!ARCHIVE-LIST!!}}"
+        with open(os.path.join(archive, archive_html), "w") as html:
+            li = self.ls_data_files()
+            page = html_helper.archive.replace(archive_replace, li)
+            html.write(page)
+
+    async def write_feed_data(self, data: dict, file_name: str):
         """Write feed data."""
         with open(os.path.join(static, file_name), "w", encoding="utf-8") as datafeed:
             datafeed.write(json.dumps(data, indent=2))
+        self.write_indices(data, file_name)
 
     async def run_main(self):
         while True:

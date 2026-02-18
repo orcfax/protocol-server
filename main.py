@@ -167,6 +167,7 @@ async def verify_signature(
 #
 # Ref: https://stackoverflow.com/a/73916745/23789970
 #
+app.mount("/archive", StaticFiles(directory="archive", html=True), name="archive")
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 
